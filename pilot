@@ -1,0 +1,78 @@
+#!/usr/bin/python3
+import argparse
+import textwrap
+import os
+import yaml
+import shutil
+from pathlib import Path
+from modules import *
+#from PilotApiClass import *
+
+def generate(dirpath):
+  directory = "rundirectory/runbooks/sample-runbook"
+  arr_dirs = ["vars","recipes","files/default"]
+  arr_files = ["vars/default.yml","recipes/default.yml"]
+  for dir_name in arr_dirs:
+    if not os.path.exists(os.path.join(dirpath,directory,dir_name)):
+      parent_dir_path = os.path.join(dirpath,directory,dir_name)  
+      os.makedirs(parent_dir_path) 
+  for file_name in arr_files:
+    Path(os.path.join(dirpath,directory,file_name)).touch() 
+
+def run(runbook,runbook_path):
+  #read vars
+  print(f"starting pilot runbook execution [{runbook}]")
+  with open(os.path.join(runbook_path,runbook,'vars/default.yml')) as file:
+    # The FullLoader parameter handles the conversion from YAML
+    # scalar values to Python the dictionary format
+    vars_list = yaml.load(file, Loader=yaml.FullLoader)
+
+
+  with open(os.path.join(runbook_path,runbook,'recipes/default.yml')) as file:
+    # The FullLoader parameter handles the conversion from YAML
+    # scalar values to Python the dictionary format
+    tasks_list = yaml.load(file, Loader=yaml.FullLoader)
+    for val in tasks_list['tasks']:
+      for key in val:
+        if(key == "file"):
+          modules.file.execute(val['file'])
+        elif(key == "package"):
+          modules.package.execute(val['package'])
+        elif(key == "service"):
+          modules.service.execute(val['service'])
+        else:
+          #print("Error 404: Module not found error: No such module found " + key)
+          modules.display.output(f"Error 404: Module not found error: No such module found {key}",'FAIL')
+
+if __name__ == "__main__" :
+
+  parser = argparse.ArgumentParser()
+  parser.add_argument('-f', action='store', dest='definition_name', help = 'generate runbook directory template')
+  parser.add_argument('-r', action='store', dest='runlist', help='runbook list')
+  parser.add_argument('-u', action='store', dest='username',help='username for ssh')
+  parser.add_argument('-p', action='store', dest='password', help='password for ssh')
+  parser.add_argument('-S', action='store', dest='servername', help='servername to run runbook via ssh')
+  parser.add_argument('-c', action='store', dest='dirpath', default=os.getcwd() , help='runbook folder path')
+  parser.add_argument('--version', action='version', version='%(prog)s 1.0')
+  results = parser.parse_args()
+
+  if(results.definition_name == "generate"):
+    generate(results.dirpath) 
+  elif(results.definition_name == "run"):
+    run(results.runlist,os.path.join(results.dirpath,'rundirectory/runbooks/'))
+#parser = argparse.ArgumentParser( prog='newpilot',formatter_class=argparse.RawDescriptionHelpFormatter, 
+#         description=textwrap.dedent('''\
+#  Please do not mess up this text!
+#  --------------------------------
+#    I have indented it
+#    exactly the way
+#    I want it
+#   '''))
+#parser.print_help()
+#print('simple_value     ='+ results.simple_value)
+#print('constant_value   ='+ results.constant_value)
+#print('boolean_switch   ='+ results.boolean_switch)
+#print('collection       ='+ results.collection)
+#print('const_collection ='+ results.const_collection)
+
+

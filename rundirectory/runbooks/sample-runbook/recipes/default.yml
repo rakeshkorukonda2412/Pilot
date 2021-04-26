@@ -1,0 +1,24 @@
+---
+tasks:
+- file:
+    comment: create file in /tmp
+    path: /tmp/file1.txt
+    owner: root
+    group: root
+    mode: 755
+    content: "Hello Rakesh Korukonda. Welcome to SLACK"
+    action: create
+- file:
+    comment: delete file /tmp/file2.txt
+    path: /tmp/file2.txt
+    action: delete
+
+- package:
+    comment: install apache2 package
+    name: vim
+    action: install 
+
+- service:
+    comment: start service apache2
+    name: apache2
+    action: stop
