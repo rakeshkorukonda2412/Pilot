@@ -42,8 +42,6 @@ def run_command(command):
 #Check if service status is uptodate, if not update the service with respective action
 def isUptoDate(comment,name,action):
   rc,status = isPackageInstalled(name,action)
-  print(rc)
-  print(status)
   if(action == "install"):
     if(rc == 0):
       modules.display.output(f"package({name})  (action: {action})(uptodate)",'OKCYAN') 
