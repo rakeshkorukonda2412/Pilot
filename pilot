@@ -60,19 +60,3 @@ if __name__ == "__main__" :
     generate(results.dirpath) 
   elif(results.definition_name == "run"):
     run(results.runlist,os.path.join(results.dirpath,'rundirectory/runbooks/'))
-#parser = argparse.ArgumentParser( prog='newpilot',formatter_class=argparse.RawDescriptionHelpFormatter, 
-#         description=textwrap.dedent('''\
-#  Please do not mess up this text!
-#  --------------------------------
-#    I have indented it
-#    exactly the way
-#    I want it
-#   '''))
-#parser.print_help()
-#print('simple_value     ='+ results.simple_value)
-#print('constant_value   ='+ results.constant_value)
-#print('boolean_switch   ='+ results.boolean_switch)
-#print('collection       ='+ results.collection)
-#print('const_collection ='+ results.const_collection)
-
-
